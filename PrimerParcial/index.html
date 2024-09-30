@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primer Parcial</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <form id="form_datos">
+        <h3>Form Datos</h3>
+        <div class="flex-container">
+            <label for="filtro">Filtrar por:</label>
+            <select id="filtro" name="filtro">
+                <option value="todos">Todos</option>
+                <option value="empleados">Empleados</option>
+                <option value="clientes">Clientes</option>
+            </select>
+        </div>
+        
+        <div class="flex-container">
+            <label id="edad_promedio">Calcular edad promedio:</label>
+            <input type="num" id="input_edad_promedio" readonly>
+            <button type="button" onclick="calcularEdadPromedio()">Calcular</button>
+        </div>
+
+        <p>Mostrar columnas:</p>
+        <div class="checkbox-group flex-container">
+            <input type="checkbox" id="id_checkbox" name="id" value="id"> ID
+            <input type="checkbox" id="nombre_checkbox" name="nombre" value="nombre"> Nombre
+            <input type="checkbox" id="apellido_checkbox" name="apellido" value="apellido"> Apellido
+            <input type="checkbox" id="edad_checkbox" name="edad" value="edad"> Edad
+            <input type="checkbox" id="sueldo_checkbox" name="sueldo" value="sueldo"> Sueldo
+            <input type="checkbox" id="ventas_checkbox" name="ventas" value="ventas"> Ventas
+            <input type="checkbox" id="compras_checkbox" name="compras" value="compras"> Compras
+            <input type="checkbox" id="telefono_checkbox" name="telefono" value="telefono"> Teléfono
+        </div>
+        
+        <p id="mensaje_error" style="color: red;"></p>
+
+        <table id="tabla_datos">
+            <thead id="encabezado_tabla">
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Edad</th>
+                    <th>Sueldo</th>
+                    <th>Ventas</th>
+                    <th>Compras</th>
+                    <th>Teléfono</th>
+                </tr>
+            </thead>
+
+            <tbody id="cuerpo_tabla_inicial">
+                <tr>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+            </tbody>
+
+            <tbody id="cuerpo_tabla">
+
+            </tbody>
+        </table>
+
+        <br>
+        <div>
+            <button type="button" onclick="agregarPersona()">Agregar Empleado/Cliente</button>
+        </div>
+
+    </form>
+
+    <div id="formulario_Abm">
+
+        <form id="form_abm" style="display: none;">
+            <h2>Formulario ABM</h2>
+            <div class="flex-container">
+                <label for="id_persona">Id:</label>
+                <input type="number" id="id_persona" name="id_persona" readonly>
+            </div>
+            <div class="flex-container">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre">
+            </div>
+            <div class="flex-container">
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" name="apellido">
+            </div>
+            <div class="flex-container">
+                <label for="edad">Edad:</label>
+                <input type="number" id="edad" name="edad">
+            </div>
+            <p id="mensaje_error_abm" style="color: red;"></p>
+            <div class="flex-container">
+                <label for="tipo">Tipo:</label>
+                <select id="tipo" name="tipo">
+                    <option value="" selected disabled>Seleccione tipo</option>
+                    <option value="cliente">Cliente</option>
+                    <option value="empleado">Empleado</option>
+                </select>
+            </div>
+    
+            <div id="campos_cliente_empleado"></div>
+            <div class="flex-container">
+                <button type="button" id='botonAceptar' onclick="guardarDatos()">Aceptar</button>
+                <button type="button" id='botonModificar' style="display: none;" onclick="modificarDatosPersona()">Modificar</button>
+                <button type="button" id='botonEliminar' style="display: none;" onclick="eliminarPersona()">Eliminar</button>
+                <button type="button" id="mostrarFormularioBtn" onclick="mostrarFormulario()">Cancelar</button>
+            </div>
+        </form>
+
+    </div>
+
+
+
+    <script>
+
+        class Persona {
+            constructor(id, nombre, apellido, edad) {
+                this.id = id;
+                this.nombre = nombre;
+                this.apellido = apellido;
+                this.edad = edad;
+            }
+
+            toString() {
+                return `Id: ${this.id}, Nombre: ${this.nombre}, Apellido: ${this.apellido}, Edad: ${this.edad}`;
+            }
+
+            toJson() {
+                return JSON.stringify(this);
+            }
+        }
+
+        class Empleado extends Persona {
+            constructor(id, nombre, apellido, edad, sueldo, ventas) {
+                super(id, nombre, apellido, edad);
+                this.sueldo = sueldo;
+                this.ventas = ventas;
+                // this.sueldo = sueldo ?? "--";
+                // this.ventas = ventas ?? "--";
+            }
+
+            toString() {
+                return `${super.toString()}, Sueldo: ${this.sueldo}, Ventas: ${this.ventas}`;
+            }
+
+            toJson() {
+                return JSON.stringify(this);
+            }
+        }
+
+        class Cliente extends Persona {
+            constructor(id, nombre, apellido, edad, compras, telefono) {
+                super(id, nombre, apellido, edad);
+                this.compras = compras;
+                this.telefono = telefono;
+                // this.compras = compras ?? "--";
+                // this.telefono = telefono ?? "--";
+            }
+
+            toString() {
+                return `${super.toString()}, Compras: ${this.compras}, Telefono: ${this.telefono}`;
+            }
+
+            toJson() {
+                return JSON.stringify(this);
+            }
+
+        }
+
+        var personas_json = '[{"id":1, "nombre":"Marcelo", "apellido":"Luque", "edad":45, "ventas":15000, "sueldo":2000},{"id":2,"nombre":"Ramiro", "apellido":"Escobar", "edad":35, "ventas": 6000, "sueldo": 1000},{"id":3, "nombre":"Facundo","apellido":"Cairo","edad":30, "ventas":500, "sueldo":15000},{"id":4, "nombre":"Fernando", "apellido":"Nieto","edad":18, "compras":8000, "telefono":"152111131"},{"id":5, "nombre":"Manuel", "apellido":"Loza", "edad":20,"compras":50000, "telefono":"42040077"},{"id":6, "nombre":"Nicolas","apellido":"Serrano", "edad":23,"compras":7000, "telefono":"1813181563"}]'
+        var personas_array = JSON.parse(personas_json);
+
+
+        var personas_instanciadas_array = [];
+
+        personas_array.forEach(persona => {
+
+            if (persona.ventas !== undefined && persona.sueldo !== undefined) {
+
+                let empleado = new Empleado(persona.id, persona.nombre, persona.apellido, persona.edad, persona.sueldo, persona.ventas);
+                personas_instanciadas_array.push(empleado);
+
+            } else if (persona.compras !== undefined && persona.telefono !== undefined) {
+
+                let cliente = new Cliente(persona.id, persona.nombre, persona.apellido, persona.edad, persona.compras, persona.telefono);
+                personas_instanciadas_array.push(cliente);
+
+            }
+        });
+
+        // //MOSTRAR TODOS
+        // function mostrarTodos() {
+
+        //     let resultado = document.getElementById('resultado');
+        //     resultado.innerHTML = "";
+
+        //     personas_instanciadas_array.forEach(persona => {
+        //         resultado.innerHTML += `<p>${persona.toString()}</p>`;
+        //     });
+
+        // }
+        // //MOSTRAR EMPLEADOS
+        // function mostrarEmpleados() {
+
+        //     let resultado = document.getElementById('resultado');
+        //     resultado.innerHTML = "";
+
+        //     let empleados = personas_instanciadas_array.filter(persona => persona instanceof Empleado);
+
+        //     empleados.forEach(empleado => {
+        //         resultado.innerHTML += `<p>${empleado.toString()}</p>`;
+        //     });
+
+        // }
+        // //MOSTRAR CLIENTES
+        // function mostrarClientes() {
+
+        //     let resultado = document.getElementById('resultado');
+        //     resultado.innerHTML = "";
+
+        //     let clientes = personas_instanciadas_array.filter(persona => persona instanceof Cliente);
+            
+        //     clientes.forEach(cliente => {
+        //         resultado.innerHTML += `<p>${cliente.toString()}</p>`;
+        //     });
+
+        // }
+        // // SACAR DEL DOM LOS CLIENTES MOSTRADOS
+        // function noMostrarClientes(){
+
+        //     let etiqueta_a_limpiar = document.getElementById('resultado');
+        //     etiqueta_a_limpiar.innerHTML = "";
+        // }
+
+
+        //CALCULAR PROMEDIO
+        
+        function calcularEdadPromedio() {
+
+            let filtro = document.getElementById('filtro').value;
+
+            let personas_filtradas;
+
+
+            if (filtro === 'todos') {
+                personas_filtradas = personas_instanciadas_array;
+
+            } else if (filtro === 'empleados') {
+                personas_filtradas = personas_instanciadas_array.filter(persona => persona instanceof Empleado);
+
+            } else if (filtro === 'clientes') {
+                personas_filtradas = personas_instanciadas_array.filter(persona => persona instanceof Cliente);
+
+            }
+
+            let suma_edades = personas_filtradas.reduce((acumulador, persona) => acumulador + persona.edad, 0);
+            let promedio = (suma_edades / personas_filtradas.length).toFixed(2);
+
+            document.getElementById('input_edad_promedio').value = promedio;
+        }
+
+        // Escuchar el evento de cambio en los checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                mostrarDatos();
+            });
+        });
+
+        function mostrarDatos() {
+
+          
+            let cuerpoTabla = document.getElementById('cuerpo_tabla');
+            cuerpoTabla.innerHTML = "";
+
+            let columnasSeleccionadas = [];
+            // Recorre los checkboxes seleccionados y los pushea al array "columnasSeleccionadas".
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                columnasSeleccionadas.push(checkbox.value);
+            });
+            let mensajeError = document.getElementById('mensaje_error');
+            let encabezado_tabla = document.getElementById('encabezado_tabla');
+
+            if(columnasSeleccionadas.length === 0) {
+                document.getElementById('cuerpo_tabla_inicial').style.display = 'table-row-group'
+                mensajeError.textContent = "No se selecciono ningna propiedad.";
+                encabezado_tabla.style.display = "table-header-group";
+                return;
+            } else {
+                document.getElementById('cuerpo_tabla_inicial').style.display = 'none';
+                mensajeError.textContent = "";
+                encabezado_tabla.style.display = "none";
+            }
+
+            // Crea el encabezado para la fila a mostrar el titulo.
+            let encabezadoHtml = "<tr>";
+            columnasSeleccionadas.forEach(columna => {
+                encabezadoHtml += `<th id="titulo_${columna}">${hacerMayusculaPrimerLetra(columna)}</th>`;
+            });
+            encabezadoHtml += "</tr>";
+            cuerpoTabla.innerHTML += encabezadoHtml;
+
+            let filtro = document.getElementById('filtro').value;
+            let personas_filtradas;
+
+            if (filtro === 'todos') {
+                personas_filtradas = personas_instanciadas_array;
+            } else if (filtro === 'empleados') {
+                personas_filtradas = personas_instanciadas_array.filter(persona => persona instanceof Empleado);
+            } else if (filtro === 'clientes') {
+                personas_filtradas = personas_instanciadas_array.filter(persona => persona instanceof Cliente);
+            }
+
+            columnasSeleccionadas.forEach(columna => {
+                document.getElementById(`titulo_${columna}`).addEventListener('click', () => {
+                    personas_filtradas.sort((a, b) => {
+                        if (a[columna] < b[columna]) {
+                            return -1; 
+                        }
+                        if (a[columna] > b[columna]) {
+                            return 1; 
+                        }
+                        return 0;
+                    });
+                    mostrarDatos();
+                });
+            });
+
+            // Generar las filas de la tabla para cada persona
+            personas_filtradas.forEach(persona => {
+                let filaHtml = "<tr>";
+                columnasSeleccionadas.forEach(columna => {
+                    let dato_fila = persona[columna] || "--";
+                    filaHtml += `<td id="dato_fila_persona_con_id_${persona.id}_${columna}">${dato_fila}</td>`;
+                    // filaHtml += `<td id="dato_fila_${persona.id}">${dato_fila}</td>`;
+                });
+
+                filaHtml += "</tr>";
+
+                // Crear un elemento de fila (tr)
+                let fila = document.createElement('tr');
+                fila.innerHTML = filaHtml;
+
+                // Agregar el evento de doble clic a la fila
+                fila.addEventListener('dblclick', () => {
+                    obtenerPersonaEnFormABM(persona.id);
+                });
+                // Añadir la fila al cuerpo de la tabla
+                cuerpoTabla.appendChild(fila);
+            });
+        }
+            
+        function hacerMayusculaPrimerLetra(palabra){
+            return palabra.charAt(0).toUpperCase() + palabra.slice(1);
+        }
+
+        function obtenerPersonaEnFormABM(id_persona){
+
+            document.getElementById('id_persona').value = id_persona;
+
+            document.getElementById('form_datos').style.display = 'none';
+            document.getElementById('mostrarFormularioBtn').style.display = 'block';
+            document.getElementById('form_abm').style.display = 'block';
+
+            document.getElementById('botonAceptar').style.display = 'none'; 
+            document.getElementById('botonModificar').style.display = 'block';
+            document.getElementById('botonEliminar').style.display = 'block';
+
+            //Poner el formulario ABM de cero
+            const camposAdicionales = document.getElementById('campos_cliente_empleado');
+            camposAdicionales.innerHTML = '';
+
+            let persona = personas_instanciadas_array[id_persona - 1];
+
+            document.getElementById('nombre').value = persona.nombre;
+            document.getElementById('apellido').value = persona.apellido;
+            document.getElementById('edad').value = persona.edad;
+
+            let tipo = document.getElementById('tipo');
+            
+            if(persona instanceof Cliente){
+                tipo.value = 'cliente';
+            }else{
+                tipo.value = 'empleado';
+            }
+            
+            mostrarCamposAdicionales();
+
+            if(tipo.value == 'cliente'){
+                document.getElementById('compras').value = persona.compras;
+                document.getElementById('telefono').value = persona.telefono;
+
+            }else{
+                document.getElementById('sueldo').value = persona.sueldo;
+                document.getElementById('ventas').value = persona.ventas;
+            }
+
+        }
+
+        function modificarDatosPersona() {
+
+            let id_persona = document.getElementById('id_persona').value;
+            let nombre = document.getElementById('nombre').value;
+            let apellido = document.getElementById('apellido').value;
+            let edad = document.getElementById('edad').value;
+            let compras = document.getElementById('compras');
+            let telefono = document.getElementById('telefono');
+            let sueldo = document.getElementById('sueldo');
+            let ventas = document.getElementById('ventas');
+            let tipo = document.getElementById('tipo').value;
+
+            let mensaje = document.getElementById("mensaje_error_abm");
+
+
+            let persona = personas_instanciadas_array[id_persona - 1];
+
+            if(nombre == "" || apellido == "" || isNaN(edad) || edad == ""){
+                mensaje.innerText = "Completa todos los datos.";
+            }
+            else{
+                persona.nombre = nombre;
+                persona.apellido = apellido;
+                persona.edad = edad;
+                if (tipo === 'cliente') {
+                    if (isNaN(compras.value) || compras.value == "" || isNaN(telefono.value) || telefono.value == "" ){
+                        mensaje.innerText = "Datos de cliente incompletos, completalos por favor.";
+                        return;
+                    }else{
+                        persona.compras = compras.value;
+                        persona.telefono = telefono.value;
+                    }
+                } 
+                else if (tipo === 'empleado') {
+                    if(isNaN(sueldo.value) || sueldo.value == "" || isNaN(ventas.value) || ventas.value == "" ){
+                        mensaje.innerText = "Datos de Empleado incompletos, completalos por favor.";
+                        return;
+                    }else{
+                        persona.sueldo = sueldo.value;
+                        persona.ventas = ventas.value;
+                    }
+                }
+    
+                alert(`Los datos de ${persona.nombre} han sido modificados.`);
+    
+                mostrarFormulario();
+            }
+            
+        }
+
+        function eliminarPersona(){
+            
+            let id_persona = document.getElementById('id_persona').value;
+            let indice = id_persona-1;
+            let persona = personas_instanciadas_array[indice].nombre;
+
+            let confirmar = confirm(`Eliminar a ${persona} ??`);
+
+            if(confirmar){
+                personas_instanciadas_array.splice(indice, 1);
+
+                personas_instanciadas_array.forEach((persona, indice) => {
+                    persona.id = indice + 1;
+                });
+
+                mostrarFormulario();
+            }
+            
+        }
+
+        function agregarPersona() {
+
+            document.getElementById('form_datos').style.display = 'none';
+            document.getElementById('mostrarFormularioBtn').style.display = 'block';
+            document.getElementById('form_abm').style.display = 'block';
+            document.getElementById('botonModificar').style.display = 'none';
+            document.getElementById('botonAceptar').style.display = 'block';
+            document.getElementById('botonEliminar').style.display = 'none';
+
+            // Poner el formulario ABM de cero .. 
+            const camposAdicionales = document.getElementById('campos_cliente_empleado');
+            camposAdicionales.innerHTML = '';
+
+        }
+
+        function mostrarFormulario() {
+
+            document.getElementById('encabezado_tabla').style.display = "table-header-group";
+
+            document.getElementById('form_datos').style.display = 'block';
+            document.getElementById('form_abm').style.display = 'none';
+            let mensaje = document.getElementById("mensaje_error_abm");
+            mensaje.innerText = "";
+
+            document.getElementById('cuerpo_tabla_inicial').style.display = 'table-row-group'
+
+            vaciarFormularioABM();
+            vaciarFormularioPrincipal();
+        }
+
+        function vaciarFormularioPrincipal() {
+
+            // Vaciar Formulario Principal
+            let cuerpoTabla = document.getElementById('cuerpo_tabla');
+            cuerpoTabla.innerHTML = "";
+
+            let nombre = document.getElementById('nombre');
+            nombre.innerText = "";
+
+            // Demarcar los chekboxes
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // Vaciar Input(de lectura) Promedio:
+            document.getElementById('input_edad_promedio').value = "";
+        }
+
+        function guardarDatos() {
+
+            let faltan_datos = false;
+
+            let mensaje = document.getElementById("mensaje_error_abm");
+            mensaje.innerText = "";
+
+            let id = personas_instanciadas_array.length + 1;
+            let nombre = document.getElementById('nombre').value;
+            let apellido = document.getElementById('apellido').value;
+            let edad = parseInt(document.getElementById('edad').value);
+            let tipo_persona = document.getElementById('tipo').value;
+
+            if (tipo_persona === 'cliente') {
+
+                let compras = parseFloat(document.getElementById('compras').value);
+                let telefono = document.getElementById('telefono').value;
+
+                if (isNaN(compras) || telefono === "") {
+                    mensaje.textContent = "Ingrese Telefono y Compras";
+                    faltan_datos = true;
+                }
+
+                if (!faltan_datos) {
+
+                    let nuevoCliente = new Cliente(id, nombre, apellido, edad, compras, telefono);
+
+                    personas_instanciadas_array.push(nuevoCliente);
+                }
+
+
+            } else if (tipo_persona === 'empleado') {
+
+                let sueldo = parseFloat(document.getElementById('sueldo').value);
+                let ventas = parseFloat(document.getElementById('ventas').value);
+
+                if (isNaN(sueldo) || isNaN(ventas)) {
+                    mensaje.textContent = "Ingrese Sueldo y Ventas";
+                    faltan_datos = true;
+                }
+
+                if (!faltan_datos) {
+
+                    let nuevoEmpleado = new Empleado(id, nombre, apellido, edad, sueldo, ventas);
+                    personas_instanciadas_array.push(nuevoEmpleado);
+                }
+            }
+
+            if (nombre == "" || apellido == "" || isNaN(edad) || !tipo_persona) {
+                mensaje.textContent = "Ingrese todos los datos y elija Cliente o Empleado";
+                faltan_datos = true;
+            }
+
+            if (!faltan_datos) {
+
+                // Limpiar el formulario ABM y regresar al formulario principal
+                mostrarFormulario();
+
+                // // Mostrar todos los datos actualizados en la lista
+                // mostrarTodos();
+            }
+        }
+
+        // Función para mostrar campos adicionales según el tipo seleccionado
+        function mostrarCamposAdicionales() {
+
+            const tipo = document.getElementById('tipo').value;
+
+            const camposAdicionales = document.getElementById('campos_cliente_empleado');
+
+            camposAdicionales.innerHTML = ''; // Limpiamos los campos anteriores
+
+            if (tipo === 'cliente') {
+
+                camposAdicionales.innerHTML = `
+                   <label for="compras">Compras:</label>
+                   <input type="number" id="compras" name="compras">
+                   <label for="telefono">Teléfono:</label>
+                   <input type="number" id="telefono" name="telefono">
+               `;
+
+            } else if (tipo === 'empleado') {
+
+                camposAdicionales.innerHTML = `
+                   <label for="sueldo">Sueldo:</label>
+                   <input type="number" id="sueldo" name="sueldo">
+                   <label for="ventas">Ventas:</label>
+                   <input type="number" id="ventas" name="ventas">
+               `;
+            }
+        }
+
+        // Escuchamos el cambio en el select para mostrar los campos adicionales
+        document.getElementById('tipo').addEventListener('change', mostrarCamposAdicionales);
+
+        function vaciarFormularioABM() {
+
+            // Seleccionar todos los inputs del formulario ABM y vaciarlos
+            document.querySelectorAll('#form_abm input').forEach(input => {
+                input.value = '';
+            });
+
+            // Limpiar el select
+            document.getElementById('tipo').value = '';
+            document.getElementById('campos_cliente_empleado').innerHTML = '';
+        }
+
+    </script>
+</body>
+</html>
