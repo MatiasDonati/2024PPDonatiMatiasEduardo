@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body bgcolor="grey">
+    <h1 id="id_encabezado" name="nombre_encabezado" class="class_encabezado" value="" key="id_elemento">Encabezado</h1>
+    <p>parrafo 1</p>
+    <p>parrafo 2</p>
+    <p>parrafo 3</p>
+    <br>
+    <p>parrafo 4</p>
+
+    <form id="mi_form" action="">
+        <label for="txt_nombre">Nombre:</label>
+        <input type="text" name="nombre" id="txt_nombre" value="Ingrese su nombre" required><br>
+        <label for="txt_apellido">Apelido:</label>
+        <input type="text" name="apellido" id="txt_apellido" value="Ingrese su apellido"><br>
+        <label for="sel_tiene_auto">Tiene auto?</label>
+        <select id="sel_tiene_auto" name="tiene_auto">
+            <option value="1">SI</option>
+            <option value="2">NO</option>
+        </select><br>
+        <label for="chk_es_alumno">Es alumno?</label>
+        <input type="checkbox" name="es_alumno" id="chk_es_alumno" value="1" checked><br>
+        
+        <label for="">Seleccionar genero</label><br>
+        <label for="gen_masculino">Masculino</label>
+        <input type="radio" name="genero" value="masculino" id="gen_masculino" checked><br>
+        <label for="gen_femenino">Femenino</label>
+        <input type="radio" name="genero" value="femenino" id="gen_femenino"><br>
+        <label for="gen_otro">Otro</label>
+        <input type="radio" name="genero" value="otro" id="gen_otro"><br>
+
+        <input type="hidden" id="oculto" value="matias donati">
+
+
+
+        <table>
+            <thead>
+                <tr>
+                        <th>DNI</th>
+                        <th>Apellido</th>
+                        <th>Donati</th>
+                </tr>
+            </thead>
+            <tbody id="personas">
+                <tr id="idpersona_1">
+                    <td>12345678</td>
+                    <td>Donati</td>
+                    <td>matias</td>
+                </tr>
+                <tr id="idpersona_2">
+                    <td>32154365</td>
+                    <td>Fretea</td>
+                    <td>Jora</td>                
+                </tr>
+            </tbody>
+        </table>
+
+        <input type="submit" value="Me super Envio">
+    </form>
+</body>
+</html>
