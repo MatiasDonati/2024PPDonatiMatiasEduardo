@@ -29,12 +29,12 @@
         <div class="checkbox-group flex-container">
             <input type="checkbox" id="id_checkbox" name="id" value="id"> ID
             <input type="checkbox" id="modelo_checkbox" name="modelo" value="modelo"> Modelo
-            <input type="checkbox" id="ano_fabrica_checkbox" name="ano_fabrica" value="ano_fabrica"> Año Fabrica
-            <input type="checkbox" id="vel_maxima_checkbox" name="vel_maxima" value="vel_maxima"> Velocidad Maxima
-            <input type="checkbox" id="alt_maxima_checkbox" name="alt_maxima" value="alt_maxima"> Altura maxima
+            <input type="checkbox" id="ano_fabrica_checkbox" name="ano_fabrica" value="anoFab"> Año Fabrica
+            <input type="checkbox" id="vel_maxima_checkbox" name="vel_maxima" value="velMax"> Velocidad Maxima
+            <input type="checkbox" id="alt_maxima_checkbox" name="alt_maxima" value="altMax"> Altura maxima
             <input type="checkbox" id="autonomia_checkbox" name="autonomia" value="autonomia"> Autonomia
-            <input type="checkbox" id="cant_puertas_checkbox" name="cant_puertas" value="cant_puertas"> Cantidad Puertas
-            <input type="checkbox" id="cant_ruedas_checkbox" name="cant_ruedas" value="cant_ruedas"> Cantidad Ruerdas
+            <input type="checkbox" id="cant_puertas_checkbox" name="cant_puertas" value="cantPue"> Cantidad Puertas
+            <input type="checkbox" id="cant_ruedas_checkbox" name="cant_ruedas" value="cantRue"> Cantidad Ruerdas
         </div>
         
         <p id="mensaje_error" style="color: red;"></p>
@@ -49,7 +49,7 @@
                     <th>Altura maxima</th>
                     <th>Autonomia</th>
                     <th>Cantidad Puertas</th>
-                    <th>Teléfono</th>
+                    <th>Cantidad Ruedas</th>
                 </tr>
             </thead>
 
@@ -127,8 +127,8 @@
             constructor(id, modelo, anoFab, velMax) {
                 this.id = id;
                 this.modelo = modelo;
-                this.anoFab = anoFab;  // Corrección: se asigna anoFab a this.anoFab
-                this.velMax = velMax;  // Corrección: se asigna velMax a this.velMax
+                this.anoFab = anoFab;
+                this.velMax = velMax;
             }
 
             toString() {
@@ -193,9 +193,6 @@
             }
         });
 
-
-
-        //CALCULAR PROMEDIO
         
         function calcularVelocidadPromedio() {
 
@@ -228,7 +225,6 @@
         });
 
         function mostrarDatos() {
-
           
             let cuerpoTabla = document.getElementById('cuerpo_tabla');
             cuerpoTabla.innerHTML = "";
@@ -288,8 +284,12 @@
 
             // Generar las filas de la tabla para cada persona
             vehiculos_filtrados.forEach(vehiculo => {
+                
                 let filaHtml = "<tr>";
                 columnasSeleccionadas.forEach(columna => {
+
+                    console.log(vehiculo[columna]);
+
                     let dato_fila = vehiculo[columna] || "--";
                     filaHtml += `<td id="dato_fila_vehiculo_con_id_${vehiculo.id}_${columna}">${dato_fila}</td>`;
                 });
