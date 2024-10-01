@@ -111,7 +111,7 @@
             <div id="campos_terrestre_aereo"></div>
             <div class="flex-container">
                 <button type="button" id='botonAceptar' onclick="guardarDatos()">Aceptar</button>
-                <button type="button" id='botonModificar' style="display: none;" onclick="modificarDatosPersona()">Modificar</button>
+                <button type="button" id='botonModificar' style="display: none;" onclick="modificarDatosVehiculo()">Modificar</button>
                 <button type="button" id='botonEliminar' style="display: none;" onclick="eliminar()">Eliminar</button>
                 <button type="button" id="mostrarFormularioBtn" onclick="mostrarFormulario()">Cancelar</button>
             </div>
@@ -176,20 +176,15 @@
         var vehiculos_json = '[{"id":14, "modelo":"Ferrari F100", "anoFab":1998, "velMax":400, "cantPue":2, "cantRue":4},{"id":51, "modelo":"Dodge Viper", "anoFab":1991, "velMax":266, "cantPue":2, "cantRue":4},{"id":67, "modelo":"Boeing CH-47 Chinook","anoFab":1962, "velMax":302, "altMax":6, "autonomia":1200},{"id":666, "modelo":"Aprilia RSV 1000 R","anoFab":2004, "velMax":280, "cantPue":0, "cantRue":2},{"id":872, "modelo":"Boeing 747-400", "anoFab":1989,"velMax":988, "altMax":13, "autonomia":13450},{"id":742, "modelo":"Cessna CH-1 SkyhookR", "anoFab":1953,"velMax":174, "altMax":3, "autonomia":870}]';
         var vehiculos_array = JSON.parse(vehiculos_json);
 
-
         var vehiculos_instanciados_array = [];
 
         vehiculos_array.forEach(vehiculo => {
-
             if (vehiculo.cantPue !== undefined && vehiculo.cantRue !== undefined) {
-
-                let vehiculo_aereo = new Aereo(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.altMax, vehiculo.autonomia);
-                vehiculos_instanciados_array.push(vehiculo_aereo);
-
-            } else if (vehiculo.altMax !== undefined && vehiculo.autonomia !== undefined) {
-
                 let vehiculo_terrestre = new Terrestre(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.cantPue, vehiculo.cantRue);
                 vehiculos_instanciados_array.push(vehiculo_terrestre);
+            } else if (vehiculo.altMax !== undefined && vehiculo.autonomia !== undefined) {
+                let vehiculo_aereo = new Aereo(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.altMax, vehiculo.autonomia);
+                vehiculos_instanciados_array.push(vehiculo_aereo);
             }
         });
 
@@ -217,7 +212,6 @@
             document.getElementById('input_velocidad_promedio').value = promedio;
         }
 
-        // Escuchar el evento de cambio en los checkboxes
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', () => {
                 mostrarDatos();
@@ -230,7 +224,7 @@
             cuerpoTabla.innerHTML = "";
 
             let columnasSeleccionadas = [];
-            // Recorre los checkboxes seleccionados y los pushea al array "columnasSeleccionadas".
+
             document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
                 columnasSeleccionadas.push(checkbox.value);
             });
@@ -248,7 +242,6 @@
                 encabezado_tabla.style.display = "none";
             }
 
-            // Crea el encabezado para la fila a mostrar el titulo.
             let encabezadoHtml = "<tr>";
             columnasSeleccionadas.forEach(columna => {
                 encabezadoHtml += `<th id="titulo_${columna}">${hacerMayusculaPrimerLetra(columna)}</th>`;
@@ -282,29 +275,23 @@
                 });
             });
 
-            // Generar las filas de la tabla para cada persona
+            
             vehiculos_filtrados.forEach(vehiculo => {
-                
                 let filaHtml = "<tr>";
                 columnasSeleccionadas.forEach(columna => {
-
-                    console.log(vehiculo[columna]);
-
                     let dato_fila = vehiculo[columna] || "--";
                     filaHtml += `<td id="dato_fila_vehiculo_con_id_${vehiculo.id}_${columna}">${dato_fila}</td>`;
                 });
 
                 filaHtml += "</tr>";
 
-                // Crear un elemento de fila (tr)
                 let fila = document.createElement('tr');
                 fila.innerHTML = filaHtml;
 
-                // Agregar el evento de doble clic a la fila
                 fila.addEventListener('dblclick', () => {
                     obtenerPersonaEnFormABM(vehiculo.id);
+
                 });
-                // Añadir la fila al cuerpo de la tabla
                 cuerpoTabla.appendChild(fila);
             });
         }
@@ -320,16 +307,16 @@
             document.getElementById('form_datos').style.display = 'none';
             document.getElementById('mostrarFormularioBtn').style.display = 'block';
             document.getElementById('form_abm').style.display = 'block';
-
             document.getElementById('botonAceptar').style.display = 'none'; 
             document.getElementById('botonModificar').style.display = 'block';
             document.getElementById('botonEliminar').style.display = 'block';
 
-            //Poner el formulario ABM de cero
+
             const camposAdicionales = document.getElementById('campos_terrestre_aereo');
             camposAdicionales.innerHTML = '';
 
-            let vehiculo = vehiculos_instanciados_array[id_vehiculo - 1];
+            let vehiculo = vehiculos_instanciados_array.find(vehiculo => vehiculo.id === id_vehiculo);
+
 
             document.getElementById('modelo').value = vehiculo.modelo;
             document.getElementById('ano_fabrica').value = vehiculo.anoFab;
@@ -347,7 +334,7 @@
 
             if(tipo.value == 'terrestre'){
                 document.getElementById('cant_puertas').value = vehiculo.cantPue;
-                document.getElementById('cant_ruedas').value = vehiculo.cant_ruedas;
+                document.getElementById('cant_ruedas').value = vehiculo.cantRue;
 
             }else{
                 document.getElementById('alt_maxima').value = vehiculo.altMax;
@@ -356,9 +343,8 @@
 
         }
 
-        function modificarDatosPersona() {
-
-            let id_vehiculo = document.getElementById('id_vehiculo').value;
+        function modificarDatosVehiculo() {
+            let id_vehiculo = parseInt(document.getElementById('id_vehiculo').value, 10); 
             let modelo = document.getElementById('modelo').value;
             let ano_fabrica = document.getElementById('ano_fabrica').value;
             let vel_maxima = document.getElementById('vel_maxima').value;
@@ -370,65 +356,69 @@
 
             let mensaje = document.getElementById("mensaje_error_abm");
 
-            // CAMBIAR A VEHICULO
-            // CAMBIAR A VEHICULO
-            // CAMBIAR A VEHICULO
-            // CAMBIAR A VEHICULO
+            let vehiculo = vehiculos_instanciados_array.find(vehiculo => vehiculo.id === id_vehiculo);
 
-            let vehiculo = vehiculos_instanciados_array[id_vehiculo - 1];
-
-            if(modelo == "" || ano_fabrica == "" || isNaN(vel_maxima) || vel_maxima == ""){
-                mensaje.innerText = "Completa todos los datos.";
+            if (!vehiculo) {
+                mensaje.innerText = "Vehículo no encontrado.";
+                return;
             }
-            else{
+
+            if (modelo === "" || ano_fabrica === "" || ano_fabrica <= 1885 || isNaN(vel_maxima) || vel_maxima === "" || vel_maxima < 1) {
+                mensaje.innerText = "Completa todos los datos. Fabricacion debe ser mayor a 1885 y velocidad mayor a 0.";
+            } else {
                 vehiculo.modelo = modelo;
-                vehiculo.ano_fabrica = ano_fabrica;
-                vehiculo.vel_maxima = vel_maxima;
+                vehiculo.anoFab = ano_fabrica; 
+                vehiculo.velMax = vel_maxima; 
+
                 if (tipo === 'terrestre') {
-                    if (isNaN(cant_puertas.value) || cant_puertas.value == "" || isNaN(cant_ruedas.value) || cant_ruedas.value == "" ){
+                    if (isNaN(cant_puertas.value) || cant_puertas.value === "" || isNaN(cant_ruedas.value) || cant_ruedas.value === "") {
                         mensaje.innerText = "Datos de cliente incompletos, completalos por favor.";
                         return;
-                    }else{
-                        vehiculo.cant_puertas = cant_puertas.value;
-                        vehiculo.cant_ruedas = cant_ruedas.value;
+                    } else {
+                        vehiculo.cantPue = cant_puertas.value; 
+                        vehiculo.cantRue = cant_ruedas.value; 
                     }
-                } 
-                else if (tipo === 'aereo') {
-                    if(isNaN(alt_maxima.value) || alt_maxima.value == "" || isNaN(autonomia.value) || autonomia.value == "" ){
+                } else if (tipo === 'aereo') {
+                    if (isNaN(alt_maxima.value) || alt_maxima.value === "" || isNaN(autonomia.value) || autonomia.value === "") {
                         mensaje.innerText = "Datos de Empleado incompletos, completalos por favor.";
                         return;
-                    }else{
-                        vehiculo.alt_maxima = alt_maxima.value;
-                        vehiculo.autonomia = autonomia.value;
+                    } else {
+                        vehiculo.altMax = alt_maxima.value; 
+                        vehiculo.autonomia = autonomia.value; 
                     }
                 }
-    
+
                 alert(`Los datos de ${vehiculo.modelo} han sido modificados.`);
-    
+
                 mostrarFormulario();
             }
-            
         }
 
-        function eliminar(){
-            
-            let id_vehiculo = document.getElementById('id_vehiculo').value;
-            let indice = id_vehiculo-1;
-            let vehiculo = vehiculos_instanciados_array[indice].modelo;
 
-            let confirmar = confirm(`Eliminar a ${vehiculo} ??`);
+        function eliminar() {
+            let id_vehiculo = parseInt(document.getElementById('id_vehiculo').value, 10);
+            let indice = vehiculos_instanciados_array.findIndex(vehiculo => vehiculo.id === id_vehiculo);
 
-            if(confirmar){
+            if (indice === -1) {
+                alert('Vehículo no encontrado.');
+                return; 
+            }
+
+            let vehiculo = vehiculos_instanciados_array[indice];
+
+            let confirmar = confirm(`Eliminar a ${vehiculo.modelo} ??`); 
+
+            if (confirmar) {
                 vehiculos_instanciados_array.splice(indice, 1);
 
-                // vehiculos_instanciados_array.forEach((vehiculo, indice) => {
-                //     vehiculo.id = indice + 1;
+                // vehiculos_instanciados_array.forEach((vehiculo, nuevoIndice) => {
+                //     vehiculo.id = nuevoIndice + 1; 
                 // });
 
-                mostrarFormulario();
+                mostrarFormulario(); 
             }
-            
         }
+
 
         function agregar() {
 
@@ -439,7 +429,6 @@
             document.getElementById('botonAceptar').style.display = 'block';
             document.getElementById('botonEliminar').style.display = 'none';
 
-            // Poner el formulario ABM de cero .. 
             const camposAdicionales = document.getElementById('campos_terrestre_aereo');
             camposAdicionales.innerHTML = '';
 
@@ -479,69 +468,55 @@
         }
 
         function guardarDatos() {
-
             let faltan_datos = false;
-
             let mensaje = document.getElementById("mensaje_error_abm");
             mensaje.innerText = "";
 
             let id = vehiculos_instanciados_array.length + 1;
             let modelo = document.getElementById('modelo').value;
-            let ano_fabrica = document.getElementById('ano_fabrica').value;
-            let vel_maxima = parseInt(document.getElementById('vel_maxima').value);
+            let ano_fabrica = parseInt(document.getElementById('ano_fabrica').value);
+            let vel_maxima = parseFloat(document.getElementById('vel_maxima').value);
             let tipo_vehiculo = document.getElementById('tipo').value;
 
+            if (modelo === "" || ano_fabrica <= 1885 || isNaN(vel_maxima) || vel_maxima < 0 || !tipo_vehiculo) {
+                mensaje.textContent = "Ingrese todos los datos y elija Aereo o Terrestre. La fabricación debe ser mayor a 1885.";
+                faltan_datos = true;
+            }
+
             if (tipo_vehiculo === 'terrestre') {
-
                 let cant_puertas = parseFloat(document.getElementById('cant_puertas').value);
-                let cant_ruedas = document.getElementById('cant_ruedas').value;
+                let cant_ruedas = parseFloat(document.getElementById('cant_ruedas').value);
 
-                if (isNaN(cant_puertas) || cant_ruedas === "") {
-                    mensaje.textContent = "Ingrese cantidad de Ruedas y cantidad de Puertas";
+                if (isNaN(cant_puertas) || cant_puertas < 0 || isNaN(cant_ruedas) || cant_ruedas < 1) {
+                    mensaje.textContent = "Ingrese cantidad de Ruedas y cantidad de Puertas validas.";
                     faltan_datos = true;
                 }
 
                 if (!faltan_datos) {
-
                     let nuevoTerrestre = new Terrestre(id, modelo, ano_fabrica, vel_maxima, cant_puertas, cant_ruedas);
-
                     vehiculos_instanciados_array.push(nuevoTerrestre);
                 }
 
-
             } else if (tipo_vehiculo === 'aereo') {
-
                 let alt_maxima = parseFloat(document.getElementById('alt_maxima').value);
                 let autonomia = parseFloat(document.getElementById('autonomia').value);
 
-                if (isNaN(alt_maxima) || isNaN(autonomia)) {
-                    mensaje.textContent = "Ingrese Altura Maxima y Autonomia";
+                if (isNaN(alt_maxima) || isNaN(autonomia) || alt_maxima < 1 || autonomia <= 0) {
+                    mensaje.textContent = "Ingrese Altura Maxima y Autonomia válidas. Ambos deben ser mayores a cero.";
                     faltan_datos = true;
                 }
 
                 if (!faltan_datos) {
-
                     let nuevoAereo = new Aereo(id, modelo, ano_fabrica, vel_maxima, alt_maxima, autonomia);
                     vehiculos_instanciados_array.push(nuevoAereo);
                 }
             }
 
-            if (modelo == "" || ano_fabrica == "" || isNaN(vel_maxima) || !tipo_vehiculo) {
-                mensaje.textContent = "Ingrese todos los datos y elija Aereo o Terrestre.";
-                faltan_datos = true;
-            }
-
             if (!faltan_datos) {
-
-                // Limpiar el formulario ABM y regresar al formulario principal
                 mostrarFormulario();
-
-                // // Mostrar todos los datos actualizados en la lista
-                // mostrarTodos();
             }
-        }
+}
 
-        // Función para mostrar campos adicionales según el tipo seleccionado
         function mostrarCamposAdicionales() {
 
             const tipo = document.getElementById('tipo').value;
@@ -570,17 +545,14 @@
             }
         }
 
-        // Escuchamos el cambio en el select para mostrar los campos adicionales
         document.getElementById('tipo').addEventListener('change', mostrarCamposAdicionales);
 
         function vaciarFormularioABM() {
 
-            // Seleccionar todos los inputs del formulario ABM y vaciarlos
             document.querySelectorAll('#form_abm input').forEach(input => {
                 input.value = '';
             });
 
-            // Limpiar el select
             document.getElementById('tipo').value = '';
             document.getElementById('campos_terrestre_aereo').innerHTML = '';
         }
