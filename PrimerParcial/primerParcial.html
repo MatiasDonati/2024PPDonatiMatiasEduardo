@@ -244,9 +244,10 @@
 
             let encabezadoHtml = "<tr>";
             columnasSeleccionadas.forEach(columna => {
-                encabezadoHtml += `<th id="titulo_${columna}">${hacerMayusculaPrimerLetra(columna)}</th>`;
+                encabezadoHtml += `<th id="titulo_${columna}" class="encabezado-tabla">${hacerMayusculaPrimerLetra(columna)}</th>`;
             });
             encabezadoHtml += "</tr>";
+
             cuerpoTabla.innerHTML += encabezadoHtml;
 
             let filtro = document.getElementById('filtro').value;
@@ -289,7 +290,7 @@
                 fila.innerHTML = filaHtml;
 
                 fila.addEventListener('dblclick', () => {
-                    obtenerPersonaEnFormABM(vehiculo.id);
+                    obtenerVehiculoEnFormABM(vehiculo.id);
 
                 });
                 cuerpoTabla.appendChild(fila);
@@ -300,7 +301,7 @@
             return palabra.charAt(0).toUpperCase() + palabra.slice(1);
         }
 
-        function obtenerPersonaEnFormABM(id_vehiculo){
+        function obtenerVehiculoEnFormABM(id_vehiculo){
 
             document.getElementById('id_vehiculo').value = id_vehiculo;
 
