@@ -190,13 +190,22 @@
         }); 
 
 
-        //Para Que arranquen los datos en patalla
-        mostrarDatos();
-        
-        //EScuchadot de evento por si camia filtro y muestra los datos
-        document.getElementById('filtro').addEventListener('change', () => {
+        function mostrarTodos() {
+            document.getElementById('filtro').value = 'todos';
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = true;
+            });
+
             mostrarDatos();
-        });
+            
+            document.getElementById('filtro').addEventListener('change', () => {
+                mostrarDatos();
+            });
+        }
+
+        mostrarTodos();
+
 
 
         function calcularVelocidadPromedio() {
@@ -270,6 +279,7 @@
             } else if (filtro === 'terrestres') {
                 vehiculos_filtrados = vehiculos_instanciados_array.filter(vehiculo => vehiculo instanceof Terrestre);
             }
+
 
             columnasSeleccionadas.forEach(columna => {
                 document.getElementById(`titulo_${columna}`).addEventListener('click', () => {
@@ -405,7 +415,6 @@
             }
         }
 
-
         function eliminar() {
             let id_vehiculo = parseInt(document.getElementById('id_vehiculo').value, 10);
             let indice = vehiculos_instanciados_array.findIndex(vehiculo => vehiculo.id === id_vehiculo);
@@ -427,9 +436,10 @@
                 // });
 
                 mostrarFormulario(); 
+                mostrarTodos();
+                
             }
         }
-
 
         function agregar() {
 
@@ -442,6 +452,8 @@
 
             const camposAdicionales = document.getElementById('campos_terrestre_aereo');
             camposAdicionales.innerHTML = '';
+
+
 
         }
 
@@ -458,6 +470,8 @@
 
             vaciarFormularioABM();
             vaciarFormularioPrincipal();
+            mostrarTodos();
+
         }
 
         function vaciarFormularioPrincipal() {
@@ -525,6 +539,8 @@
 
             if (!faltan_datos) {
                 mostrarFormulario();
+                mostrarTodos();
+
             }
 }
 
