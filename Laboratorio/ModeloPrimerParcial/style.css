@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+#form_datos, #form_abm {
+    border: 2px solid black;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    /* display: flex; */
+    flex-direction: column;
+    gap: 15px;
+}
+
+#form_prueba{
+    border: 2px solid black;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    /* display: flex; */
+    flex-direction: column;
+    gap: 15px;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 2px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#tabla_datos {
+    width: 100%;
+}
+
+/* Seleccionar el encabezado de la tabla */
+#tabla_datos thead th {
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+#formulario_Abm{
+    display: flex;
+}

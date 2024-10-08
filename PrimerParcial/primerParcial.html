@@ -27,15 +27,16 @@
 
         <p>Mostrar columnas:</p>
         <div class="checkbox-group flex-container">
-            <input type="checkbox" id="id_checkbox" name="id" value="id"> ID
-            <input type="checkbox" id="modelo_checkbox" name="modelo" value="modelo"> Modelo
-            <input type="checkbox" id="ano_fabrica_checkbox" name="ano_fabrica" value="anoFab"> Año Fabrica
-            <input type="checkbox" id="vel_maxima_checkbox" name="vel_maxima" value="velMax"> Velocidad Maxima
-            <input type="checkbox" id="alt_maxima_checkbox" name="alt_maxima" value="altMax"> Altura maxima
-            <input type="checkbox" id="autonomia_checkbox" name="autonomia" value="autonomia"> Autonomia
-            <input type="checkbox" id="cant_puertas_checkbox" name="cant_puertas" value="cantPue"> Cantidad Puertas
-            <input type="checkbox" id="cant_ruedas_checkbox" name="cant_ruedas" value="cantRue"> Cantidad Ruerdas
+            <input type="checkbox" id="id_checkbox" name="id" value="id" checked> ID
+            <input type="checkbox" id="modelo_checkbox" name="modelo" value="modelo" checked> Modelo
+            <input type="checkbox" id="ano_fabrica_checkbox" name="ano_fabrica" value="anoFab" checked> Año Fabrica
+            <input type="checkbox" id="vel_maxima_checkbox" name="vel_maxima" value="velMax" checked> Velocidad Maxima
+            <input type="checkbox" id="alt_maxima_checkbox" name="alt_maxima" value="altMax" checked> Altura maxima
+            <input type="checkbox" id="autonomia_checkbox" name="autonomia" value="autonomia" checked> Autonomia
+            <input type="checkbox" id="cant_puertas_checkbox" name="cant_puertas" value="cantPue" checked> Cantidad Puertas
+            <input type="checkbox" id="cant_ruedas_checkbox" name="cant_ruedas" value="cantRue" checked> Cantidad Ruedas
         </div>
+        
         
         <p id="mensaje_error" style="color: red;"></p>
 
@@ -186,9 +187,18 @@
                 let vehiculo_aereo = new Aereo(vehiculo.id, vehiculo.modelo, vehiculo.anoFab, vehiculo.velMax, vehiculo.altMax, vehiculo.autonomia);
                 vehiculos_instanciados_array.push(vehiculo_aereo);
             }
+        }); 
+
+
+        //Para Que arranquen los datos en patalla
+        mostrarDatos();
+        
+        //EScuchadot de evento por si camia filtro y muestra los datos
+        document.getElementById('filtro').addEventListener('change', () => {
+            mostrarDatos();
         });
 
-        
+
         function calcularVelocidadPromedio() {
 
             let filtro = document.getElementById('filtro').value;
